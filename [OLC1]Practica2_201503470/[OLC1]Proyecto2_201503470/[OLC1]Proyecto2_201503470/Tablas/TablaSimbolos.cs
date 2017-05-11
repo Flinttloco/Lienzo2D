@@ -8,7 +8,7 @@ namespace _OLC1_Proyecto2_201503470.Tablas
 {
     class TablaSimbolos
     {
-        S
+        //esto fue un cambio
 
 
 
