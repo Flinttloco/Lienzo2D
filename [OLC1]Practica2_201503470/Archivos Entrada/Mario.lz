@@ -1,0 +1,204 @@
+﻿publico Lienzo Personaje¿ 
+    
+    Principal()¿
+        dibujar_Cara()$
+        dibujar_Bigote()$
+        dibujar_Gorra()$
+        dibujar_Pantalon()$
+        dibujar_Zapatos()$
+        dibujar_Manos()$
+    ?
+
+    <-Variables globales->
+    var entero escala$
+    var entero x$
+    var entero y$
+    
+    publico dibujar_cabello()¿ 
+        var entero x2$
+        var entero y2$
+        var entero escala2$
+        x2=x$
+        y2=y$
+        escala2=escala$
+        Pintar_OR(x2+escala2*2, y2+escala2, "#50361b",escala2,escala2,'r')$ 
+        
+        Pintar_OR(x2+escala2*2, y2+escala2*3, "#50361b",escala2,escala2,'r')$ 
+        
+        Pintar_OR(x2+escala2, y2+escala2*2, "#50361b",escala2,escala2*3,'r')$ 
+        
+        Pintar_OR(x2, y2+escala2, "#50361b",escala2,escala2,'r')$ 
+        
+        Pintar_OR(x2, y2+escala2*4, "#50361b",escala2,escala2,'r')$ 
+
+        Pintar_OR(x2-escala2, y2+escala2*2, "#50361b",escala2,escala2*5,'r')$ 
+        
+        Pintar_OR(x2-escala2*2, y2+escala2*3, "#50361b",escala2,escala2*3,'r')$ 
+        
+        dibujar_Ojo()$
+    ?
+    
+    publico dibujar_Bigote()¿
+        <-Operaciones relacionales variables->
+        var entero x1,y2$
+        x1=x+escala*6$
+        y2=y+escala*3$
+        si(x!=y)¿
+           Pintar_OR(x1, y2, "#50361b",escala,escala,'r')$
+        ?
+        si(y==400)¿
+           x1 = x1 + escala$
+        ?
+        si(escala<=200)¿
+           y2 = y2 + escala$ 
+        ?
+        si(x>=escala)¿
+           Pintar_OR(x1, y2, "#50361b",escala*4,escala,'r')$
+        ?
+    ?
+    
+    publico dibujar_Gorra()¿
+        <-Operaciones aritmeticas con variables globales->
+        Pintar_OR(x+escala*3, y, "#E20B0B",escala*9,escala,'r')$          
+        Pintar_OR(x+escala*2, y-escala, "#E20B0B",escala*5,escala,'r')$ 
+        Pintar_OR(x+escala*5, y-escala, "#E20B0B",escala*2,escala,'r')$ 
+    ?
+    
+    publico dibujar_Cara()¿
+        x=100$
+        y=400$
+        si(5!=5)¿
+            escala=5$
+        ?
+        si(5==5)¿
+            escala=10$ >>Escala actual 10
+        ?
+        si(5<=2)¿
+            escala=15$
+        ?
+        si(8>=15)¿
+            escala=20$
+        ?
+        var entero aux=6$
+        para(var entero y2=0;y2<6;y2++)¿
+           para(var entero x2=0;x2<aux;x2++)¿
+               Pintar_OR(x+escala*x2, y+y2*escala, "#FFCC99",escala,escala,'r')$  
+           ?
+            si(y2==0)¿
+               aux=7$
+            ?si(y2==1)¿
+               aux=9$
+            ?si(y2==2)¿
+                aux=10$
+            ?si(y2==3)¿
+                aux=9$
+            ?si(y2==4)¿
+                aux=8$
+            ?
+        ?
+        dibujar_cabello()$
+    ?
+    
+    publico dibujar_Ojo()¿
+        si(x==y || y!=y)¿
+           Pintar_OR(x+escala*5, y+escala*2-5, "#50361b",800,800,'r')$    
+        ?
+        si(y!=400 && escala<=200)¿
+           Pintar_OR(x+escala*5, y+escala*2-5, "#50361b",800,800,'r')$    
+        ?
+        si(true !&& true )¿ 
+           Pintar_OR(x+escala*5, y+escala*2-5, "#50361b",800,800,'r')$    
+        ?
+        si(false !|| true)¿ 
+           Pintar_OR(x+escala*5, y+escala*2-5, "#50361b",800,800,'r')$    
+        ?
+        si(!(x>=escala &| escala<=200) || y!=y)¿
+           Pintar_OR(x+escala*5, y+escala*2-5, "#50361b",escala,escala*2,'r')$    
+        ?
+        
+    ?    
+    
+    publico dibujar_Manos()¿
+        var entero y2=y+escala*9$
+        var entero x2=x-escala*3$
+        var entero x3=x+escala*7$
+        para(var entero y_aux=0;y_aux<3;y_aux++)¿
+            para(var entero x_aux=0;x_aux<4;x_aux++)¿
+                si(y_aux==1)¿
+                        Pintar_OR(x2+escala*x_aux, y2+escala*y_aux, "#FFCC99",escala,escala,'r')$  
+                        Pintar_OR(x3+escala*(x_aux-1), y2+escala*y_aux, "#FFCC99",escala,escala,'r')$  
+                ?sino¿
+                    si(x_aux!=3)¿
+                        Pintar_OR(x2+escala*x_aux, y2+escala*y_aux, "#FFCC99",escala,escala,'r')$  
+                        Pintar_OR(x3+escala*x_aux, y2+escala*y_aux, "#FFCC99",escala,escala,'r')$  
+
+                    ?
+                ?
+            ?
+        ?
+    ?
+    
+    publico dibujar_Camisa()¿
+          var entero y2=y+escala*6$
+        para(var entero y_aux=0;y_aux<3;y_aux++)¿
+            si(y_aux<1)¿
+                Pintar_OR(x+escala*2, y2+escala*y_aux, "#50361b",escala*7,escala,'r')$  
+                Pintar_OR(x-escala/2+escala*3, y2+escala, "#50361b",escala*10,escala,'r')$    
+            ?
+            si(y_aux>1)¿
+                Pintar_OR(x-escala/2+escala*3, y2+escala*y_aux, "#50361b",escala*y_aux*6,escala,'r')$    
+            ?
+
+        ?
+        Pintar_OR(x-escala/2+escala*3, y2+escala*3, "#50361b",escala*11,escala,'r')$    
+
+    ?
+
+    publico dibujar_Pantalon()¿
+        dibujar_Camisa()$
+        var entero y2=y+escala*6$
+        para(var entero y_aux=0;y_aux<7;y_aux++)¿
+            si(y_aux<2)¿
+                Pintar_OR(x+escala*2, y2+escala*y_aux, "#E20B0B",escala,escala,'r')$    
+                Pintar_OR(x+escala*5, y2+escala*y_aux, "#E20B0B",escala,escala,'r')$    
+            ?
+            si(y_aux>=2 && y_aux<6 )¿
+                Pintar_OR(x-escala/2+escala*4, y2+escala*y_aux, "#E20B0B",escala*y_aux*2,escala,'r')$    
+            ?
+            si(y_aux>=6)¿
+                Pintar_OR(x+escala, y2+escala*y_aux, "#E20B0B",escala*4,escala,'r')$    
+                Pintar_OR(x+escala*6, y2+escala*y_aux, "#E20B0B",escala*4,escala,'r')$    
+            ? 
+        ?
+        dibujar_Botones()$
+    ?    
+    
+    publico dibujar_Botones()¿
+        var entero y2=y+escala*6$
+        Pintar_OR(x+escala*2, y2+escala*3, "#FFFF00",escala,escala,'r')$    
+        Pintar_OR(x+escala*5, y2+escala*3, "#FFFF00",escala,escala,'r')$        
+    ?    
+
+    publico dibujar_Zapatos()¿
+        var entero y2=y+escala*13$
+        var entero x2=x+escala*5$
+        var entero x3=x+escala*3$
+        var entero a$
+        para(var entero y_aux=0;y_aux<2;y_aux++)¿
+            a=5$
+            para(var entero x_aux=0;x_aux<5;x_aux++)¿
+                si(y_aux<1)¿
+                    si(x_aux<4)¿
+                        Pintar_OR(x2+escala*x_aux, y2+escala*y_aux, "#50361b",escala,escala,'r')$  
+                        a--$
+                        Pintar_OR(x3-escala*a, y2+escala*y_aux, "#50361b",escala,escala,'r')$  
+                    ?
+                ?sino¿
+                    Pintar_OR(x2+escala*x_aux, y2+escala*y_aux, "#50361b",escala,escala,'r')$  
+                    Pintar_OR(x3-escala*a, y2+escala*y_aux, "#50361b",escala,escala,'r')$  
+                    a--$
+                ?
+            ?
+        ?
+    ?    
+?
