@@ -13,14 +13,15 @@ using _OLC1_Proyecto2_201503470.Tablas;
 using Microsoft.VisualBasic;
 using System.IO;
 using System.Diagnostics;
+using _OLC1_Proyecto2_201503470.Analizadores.PrimerRecorrido;
 
 namespace _OLC1_Proyecto2_201503470
 {
-    public partial class Form1 : Form
+    public partial class Principal : Form
     {
 
         ParseTreeNode most = null;
-        public Form1()
+        public Principal()
         {
             InitializeComponent();
         }
@@ -61,9 +62,7 @@ namespace _OLC1_Proyecto2_201503470
             }
 
             file.Close();
-            //System.Console.WriteLine("There were {0} lines.", counter);
-            // Suspend the screen.  
-            //System.Console.ReadLine();
+
 
             TabPage myTabPage = new TabPage(partes[partes.Length - 1]);
             myTabPage.BackColor = Color.DimGray;
@@ -97,48 +96,164 @@ namespace _OLC1_Proyecto2_201503470
             }
         }
 
+        public  void Ejecutar(String NomControl) {
 
-        //EJECUTAR
-        private void toolStripButton6_Click(object sender, EventArgs e)
-        {
-            richTextBox1.Clear();
-
-            foreach (Control c in this.tabControl1.SelectedTab.Controls)
+            foreach (Control c in tabControl1.SelectedTab.Controls)
             {
+                if (c.Name == NomControl) {
 
 
+                    lenguaje = new LanguageData(gramatica);
 
-                Gramatica gramatica = new Gramatica();
-                LanguageData lenguaje = new LanguageData(gramatica);
-                Parser parser = new Parser(lenguaje);
-                ParseTree arbol = parser.Parse(c.Text);
-                ParseTreeNode raiz = arbol.Root;
-                ParseTreeNode resultado = arbol.Root;
+                    Parser parser = new Parser(lenguaje);
+                    ParseTree arbol = parser.Parse(c.Text);
+                    ParseTreeNode raiz = arbol.Root;
+                    ParseTreeNode resultado = arbol.Root;
 
-                if (resultado != null)
-                {
+                    if (resultado != null)
+                    {
+                        most = resultado;
+                       RecorridoLienzos.IniciarRecorrido(resultado);
+                    }
+                    else
+                    {
 
-                    most = resultado;
-                    //  Recorrido.IniciarRecorrido(resultado);
-
-                }
-                else
-                {
-
-                }
-                Errores errores = new Errores();
-                String er = errores.GraficarTabla(gramatica.lista);
-
-                String[] partes = er.Split(',');
-
-                foreach (String err in partes)
-                {
-
-                    richTextBox1.Text += err + "\n";
+                    }
+                  
                 }
 
             }
         }
+
+        //EJECUTAR
+        Gramatica gramatica = new Gramatica();
+        RecorridoLienzos PrimerRecorridoo = new RecorridoLienzos();
+        LanguageData lenguaje ;
+        TablaSimbolos Tabla = new TablaSimbolos();
+
+        private void toolStripButton6_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Clear();
+            RecorridoLienzos.listaLienzos.Clear();
+            RecorridoLienzos.listaVariables.Clear();
+            RecorridoLienzos.listaPintar.Clear();
+            
+            foreach (Control a in this.tabControl1.TabPages )
+            {
+                foreach (Control c in a.Controls) {
+                    Initializer(c);
+               
+
+
+                    lenguaje = new LanguageData(gramatica);
+
+                    Parser parser = new Parser(lenguaje);
+                    ParseTree arbol = parser.Parse(c.Text);
+                    ParseTreeNode raiz = arbol.Root;
+                    ParseTreeNode resultado = arbol.Root;
+
+                    if (resultado != null)
+                    {
+
+                        most = resultado;
+                        RecorridoLienzos.IniciarRecorrido(resultado);
+
+
+                    }
+                    else
+                    {
+
+                    }
+                    Errores errores = new Errores();
+                    String er = errores.GraficarTabla(gramatica.lista);
+                    TablaSimbolos Tabla = new TablaSimbolos();
+                    Tabla.GraficarTabla(RecorridoLienzos.listaLienzos, RecorridoLienzos.listaVariables,RecorridoLienzos.listaArreglo);
+                    String[] partes = er.Split(',');
+
+                    foreach (String err in partes)
+                    {
+
+                        richTextBox1.Text += err + "\n";
+                    }
+
+                    List<Pintar> ListaProc = RecorridoLienzos.listaPintar;
+
+
+                    System.Drawing.Color col = System.Drawing.ColorTranslator.FromHtml("#000000");
+                    papel = pictureBox2.CreateGraphics();
+                    Brush brush = new SolidBrush(col);
+                    papel.FillRectangle(brush, 0, 0, 5, 5);
+
+                    foreach (Pintar item in ListaProc)
+                    {
+                        switch (item.tipo)
+                        {
+                            case "p":
+
+                                Circulo(item.posx, item.posy, item.color, item.diam);
+                                break;
+                            case "o":
+                                Ovalo(item.posx, item.posy, item.color, item.ancho, item.alto);
+                                break;
+                            case "r":
+                                Rectangulo(item.posx, item.posy, item.color, item.ancho, item.alto);
+                                Console.WriteLine("Pintar_OR(" + item.posx + "," + item.posy + "," + item.color + "," + item.ancho + "," + item.alto + "," + item.tipo);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void Initializer(Control c) {
+           
+            if (c.Name == "Raton.lz")
+            {
+                RecorridoLienzos.listaArreglo.Clear();
+                ObjArreglo nuevo = new ObjArreglo("a", 300, 400);
+                RecorridoLienzos.listaArreglo.Add(nuevo);
+                ObjArreglo nuevo2 = new ObjArreglo("centro", 300, 400);
+                RecorridoLienzos.listaArreglo.Add(nuevo2);
+            }
+        }
+
+        static Graphics papel;
+       // papel.ScaleTransform(.4F, .4F);
+        public void Ovalo(  float centerX, float centerY, String color, float ancho, float alto)
+        {
+            papel = pictureBox2.CreateGraphics();
+            Brush brush = new SolidBrush(CLR(color));
+            papel.FillEllipse(brush, centerX - (ancho / 2), centerY - (alto / 2), ancho, alto);
+        }
+
+        public  void Rectangulo( float centerX, float centerY, String color, float ancho, float alto)
+        {
+            
+            papel = pictureBox2.CreateGraphics();
+            Brush brush = new SolidBrush(CLR(color));
+            papel.FillRectangle(brush, centerX - (ancho / 2), centerY - (alto / 2), ancho, alto);
+        }
+
+        public  void Circulo( float centerX, float centerY, String color, float diam)
+        {
+            papel = pictureBox2.CreateGraphics();
+            Brush brush = new SolidBrush(CLR(color));
+            papel.FillEllipse(brush, centerX - (diam / 2), centerY - (diam / 2), diam, diam);
+        }
+
+        public static Color CLR(String HEXA)
+        {
+            var color = System.Drawing.ColorTranslator.FromHtml(HEXA);
+            return color;
+        }
+
+
+
+
+
+
 
         //NUEVO
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -218,6 +333,7 @@ namespace _OLC1_Proyecto2_201503470
         private void Form1_Load(object sender, EventArgs e)
         {
             timer1.Interval = 1;
+
 
         }
 
@@ -337,6 +453,42 @@ namespace _OLC1_Proyecto2_201503470
         private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
+        }
+
+        private void toolStripButton7_Click_2(object sender, EventArgs e)
+        {
+            Process.Start("TablaSimbolos.html");
+        }
+
+        private void toolStripButton9_Click(object sender, EventArgs e)
+        {
+
+            System.Drawing.Color negro = System.Drawing.ColorTranslator.FromHtml("#000000");
+            System.Drawing.Color blanco = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
+            papel = pictureBox2.CreateGraphics();
+            Brush brushN = new SolidBrush(negro);
+            Brush brushB = new SolidBrush(blanco);
+            Font font = new Font("Times New Roman", 9.0f);
+            
+
+            for (int i = 0; i <= 500; i += 50)
+            {
+                papel.FillRectangle(brushN, 0, i, 30, 30);
+                papel.DrawString(i.ToString(), font, brushB, 0, i);
+                papel.FillRectangle(brushB, 0, i + 25, 30, 30);
+                papel.DrawString((i+25).ToString(), font, brushN, 0, i+25);
+            }
+
+
+            for (int i = 0; i <= 500; i += 50)
+            {
+                papel.FillRectangle(brushN, i, 0, 30, 30);
+                papel.DrawString(i.ToString(), font, brushB, i,0 );
+                papel.FillRectangle(brushB, i + 25, 0, 30, 30);
+                papel.DrawString((i + 25).ToString(), font, brushN, i+25, 0);
+            }
+            //papel.FillRectangle(brushN, 0, 0, 25, 25);
+            //papel.FillRectangle(brushB, 0, 25, 25, 25);
         }
     }
 }

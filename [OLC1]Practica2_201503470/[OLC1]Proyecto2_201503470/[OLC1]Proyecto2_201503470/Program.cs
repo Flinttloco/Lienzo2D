@@ -16,7 +16,7 @@ namespace _OLC1_Proyecto2_201503470
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new Principal());
         }
     }
 }

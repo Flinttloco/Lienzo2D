@@ -28,6 +28,8 @@ namespace _OLC1_Proyecto2_201503470.Analizadores
             RegexBasedTerminal numero = new RegexBasedTerminal("numero", "[0-9]+");
             RegexBasedTerminal num = new RegexBasedTerminal("num", "[0-9]");
             RegexBasedTerminal letra = new RegexBasedTerminal("letra", "[a-zA-Z]");
+            RegexBasedTerminal hexa = new RegexBasedTerminal("hexa", "[0-9a-fA-F]+");
+
             IdentifierTerminal id = new IdentifierTerminal("id");
             #endregion
 
@@ -60,6 +62,7 @@ namespace _OLC1_Proyecto2_201503470.Analizadores
 
             #region NO TERMINALES
             NonTerminal E = new NonTerminal("E");
+            NonTerminal F = new NonTerminal("F");
             NonTerminal INICIO = new NonTerminal("INICIO");
             NonTerminal LIENZO = new NonTerminal("LIENZO");
             NonTerminal CUERPOLIENZO = new NonTerminal("CUERPOLIENZO");
@@ -101,10 +104,11 @@ namespace _OLC1_Proyecto2_201503470.Analizadores
             NonTerminal TIPOPROC = new NonTerminal("TIPOPROC");
             NonTerminal PARAMETROS = new NonTerminal("PARAMETROS");
             NonTerminal TIPOVAR = new NonTerminal("TIPOVAR");
+            NonTerminal VALORES = new NonTerminal("VALORES");
 
             NonTerminal METODOS = new NonTerminal("METODOS");
 
-
+            NonTerminal VALORESARR = new NonTerminal("VALORESARR");
 
 
             #endregion
@@ -120,6 +124,8 @@ namespace _OLC1_Proyecto2_201503470.Analizadores
             EXTENDER.Rule = EXTENDER + ToTerm(",") + id
                           | id;
 
+            //EXTENDER.Rule = id + ToTerm(",") + EXTENDER
+            //              | id;
 
             LIENZO.Rule = VISIBILIDAD +lienzo+ id + abre + CUERPOLIENZO + cierra
                         | VISIBILIDAD +lienzo + id + extend + EXTENDER + abre + CUERPOLIENZO + cierra
@@ -131,42 +137,51 @@ namespace _OLC1_Proyecto2_201503470.Analizadores
                               | VARIABLES
                               | CUERPOLIENZO + ARREGLOS
                               | ARREGLOS
+                              | CUERPOLIENZO + ASIGNACION
+                              | ASIGNACION
                               | CUERPOLIENZO + CICLOS
                               | CICLOS
-                              |CUERPOLIENZO + PRINCIPAL
-                              |PRINCIPAL
-                              |CUERPOLIENZO + PROCEDIMIENTOS
-                              |PROCEDIMIENTOS;
+                              | CUERPOLIENZO + PRINCIPAL
+                              | PRINCIPAL
+                              | CUERPOLIENZO + PROCEDIMIENTOS
+                              | PROCEDIMIENTOS;
 
             CUERPOGENERAL.Rule = CUERPOGENERAL + VARIABLES
                                 | VARIABLES
                                 | CUERPOGENERAL + ARREGLOS
                                 | ARREGLOS
+                                | CUERPOGENERAL + ASIGNACION
+                                | ASIGNACION
                                 | CUERPOGENERAL + CICLOS
                                 | CICLOS
-                                |CUERPOGENERAL + PROCNATIVOS
+                                | CUERPOGENERAL + PROCNATIVOS
                                 | PROCNATIVOS
-                                |CUERPOGENERAL+ METODOS
-                                |METODOS
+                                | CUERPOGENERAL+ METODOS
+                                | METODOS
                                 ;
             METODOS.Rule = id + ToTerm("(") + ToTerm(")") + ToTerm("$")
                          |id + ToTerm("(")+PARAMETROS+ToTerm(")")+ ToTerm("$");
 
             #region ARREGLOS
+            ARREGLOS.Rule = vari + entero + arreglo + id + ToTerm("[") + numero + ToTerm("]") + ToTerm("=") + ToTerm("{") + VALORESARR + ToTerm("}") + fin
+                          | vari + entero + arreglo + id + ToTerm("[") + numero + ToTerm("]") + ToTerm("=") + id + ToTerm("(") + ToTerm(")") + fin;
 
-            ARREGLOS.Rule = conservar + vari + TIPOARR
-                           | vari + TIPOARR
-                           | ASIGNACIONARR;
 
-            ASIGNACIONARR.Rule = id + ToTerm("[") + E + ("]") + ToTerm("=") + ToTerm("{") + VARENTERO + ToTerm("}") + fin
-                                | id + ToTerm("[") + E + ("]") + ToTerm("=") + ToTerm("{") + ARRENTERO + ToTerm("}") + fin
-                                | id + ToTerm("[") + E + ("]") + ToTerm("=") + ToTerm("{") + VALARRBOOLEANO + ToTerm("}") + fin
-                                | id + ToTerm("[") + E + ("]") + ToTerm("=") + ToTerm("{") + ARRBOOLEANO + ToTerm("}") + fin
-                                | id + ToTerm("[") + E + ("]") + ToTerm("=") + ToTerm("{") + VALARRCADENA + ToTerm("}") + fin
-                                | id + ToTerm("[") + E + ("]") + ToTerm("=") + ToTerm("{") + ARRCADENA + ToTerm("}") + fin
-                                | id + ToTerm("[") + E + ("]") + ToTerm("=") + ToTerm("{") + VALARRCARACTER + ToTerm("}") + fin
-                                | id + ToTerm("[") + E + ("]") + ToTerm("=") + ToTerm("{") + ARRCARACTER + ToTerm("}") + fin;
-            ASIGNACIONARR.ErrorRule = SyntaxError + "$";
+            VALORESARR.Rule = VALORESARR + ToTerm(",") + id
+              | id;
+            //ARREGLOS.Rule = conservar + vari + TIPOARR
+            //               | vari + TIPOARR
+            //               | ASIGNACIONARR;
+
+            //ASIGNACIONARR.Rule = id + ToTerm("[") + E + ("]") + ToTerm("=") + ToTerm("{") + VARENTERO + ToTerm("}") + fin
+            //                    | id + ToTerm("[") + E + ("]") + ToTerm("=") + ToTerm("{") + ARRENTERO + ToTerm("}") + fin
+            //                    | id + ToTerm("[") + E + ("]") + ToTerm("=") + ToTerm("{") + VALARRBOOLEANO + ToTerm("}") + fin
+            //                    | id + ToTerm("[") + E + ("]") + ToTerm("=") + ToTerm("{") + ARRBOOLEANO + ToTerm("}") + fin
+            //                    | id + ToTerm("[") + E + ("]") + ToTerm("=") + ToTerm("{") + VALARRCADENA + ToTerm("}") + fin
+            //                    | id + ToTerm("[") + E + ("]") + ToTerm("=") + ToTerm("{") + ARRCADENA + ToTerm("}") + fin
+            //                    | id + ToTerm("[") + E + ("]") + ToTerm("=") + ToTerm("{") + VALARRCARACTER + ToTerm("}") + fin
+            //                    | id + ToTerm("[") + E + ("]") + ToTerm("=") + ToTerm("{") + ARRCARACTER + ToTerm("}") + fin;
+            //ASIGNACIONARR.ErrorRule = SyntaxError + "$";
 
             TIPOARR.Rule = entero + arreglo + EXTENDER + DIMENSIONES + fin
                       | entero + arreglo + EXTENDER + DIMENSIONES + ToTerm("=") + ToTerm("{") + VALARRENTERO + ToTerm("}") + fin
@@ -231,26 +246,28 @@ namespace _OLC1_Proyecto2_201503470.Analizadores
             #region VARIABLES
             VARIABLES.Rule = conservar + vari + TIPO
                            | vari + TIPO
-                           | ASIGNACION;
+                           ;
 
-            ASIGNACION.Rule = EXTENDER + ToTerm("=") + E + fin
-                           | EXTENDER + ToTerm("=") + BOOL + fin
-                           | EXTENDER + ToTerm("=") + ToTerm("'") + LISTCARACTER + ToTerm("'") + fin
-                           | EXTENDER + ToTerm("=") + ToTerm("\"") + LISTCADENA + ToTerm("\"") + fin
-                           | id + ToTerm("++")
-                           | id + ToTerm("--")
-                           | numero + ToTerm("++")
-                           | numero + ToTerm("--")
-                           | E + ToTerm("++")
-                           | E + ToTerm("--")
-                           | id + ToTerm("++")+fin
+            ASIGNACION.Rule = //EXTENDER + ToTerm("=") + E + fin
+            //               | EXTENDER + ToTerm("=") + BOOL + fin
+            //               | EXTENDER + ToTerm("=") + ToTerm("'") + LISTCARACTER + ToTerm("'") + fin
+            //               | EXTENDER + ToTerm("=") + ToTerm("\"") + LISTCADENA + ToTerm("\"") + fin
+            //| id + ToTerm("++")
+            //| id + ToTerm("--")
+            //| numero + ToTerm("++")
+            //| numero + ToTerm("--")
+            //| E + ToTerm("++")
+            //| E + ToTerm("--")
+                            id + ToTerm("++")+fin
                            | id + ToTerm("--") + fin
-                           | numero + ToTerm("++") + fin
-                           | numero + ToTerm("--") + fin
-                           | E + ToTerm("++") + fin
-                           | E + ToTerm("--")+fin
-                           | E + ToTerm("+=")+E+fin
-                           | E + ToTerm("-=")+E+fin;
+                           //| numero + ToTerm("++") + fin
+                           //| numero + ToTerm("--") + fin
+                           //| E + ToTerm("++") + fin
+                           //| E + ToTerm("--")+fin
+                           | id + ToTerm("+=")+E+fin
+                           | id + ToTerm("-=")+E+fin
+                           | id + ToTerm("=") + E + fin
+                           ;
             ASIGNACION.ErrorRule = SyntaxError + "$";
 
             TIPO.Rule = entero + VARENTERO + fin
@@ -291,6 +308,16 @@ namespace _OLC1_Proyecto2_201503470.Analizadores
                           | id
                           | CARACTER + ToTerm(",") + id + ToTerm("=") + ToTerm("'") + LISTCARACTER + ToTerm("'")
                           | id + ToTerm("=") + ToTerm("'") + LISTCARACTER + ToTerm("'");
+
+
+            CADENA.Rule = CADENA + ToTerm(",") + id
+                        | id
+                        | CADENA + ToTerm(",") + id + ToTerm("=") + ToTerm("\"") + LISTCADENA + ToTerm("\"")
+                        | id + ToTerm("=") + ToTerm("\"") + LISTCADENA + ToTerm("\"");
+
+            VALORES.Rule = VALORES + ToTerm(",") + id
+                        | id;
+
             #region listaCARAC
             LISTCARACTER.Rule = letra
                              | num
@@ -325,11 +352,6 @@ namespace _OLC1_Proyecto2_201503470.Analizadores
                              | ToTerm("{")
                              | ToTerm("}");
             #endregion 
-
-            CADENA.Rule = CADENA + ToTerm(",") + id
-                        | id
-                        | CADENA + ToTerm(",") + id + ToTerm("=") + ToTerm("\"") + LISTCADENA + ToTerm("\"")
-                        | id + ToTerm("=") + ToTerm("\"") + LISTCADENA + ToTerm("\"");
 
             #region ListaCadena
             LISTCADENA.Rule = LISTCADENA + id
@@ -400,6 +422,11 @@ namespace _OLC1_Proyecto2_201503470.Analizadores
             #endregion
 
 
+
+
+
+
+
             #endregion
 
             #region CICLOS
@@ -408,21 +435,20 @@ namespace _OLC1_Proyecto2_201503470.Analizadores
                         | PARA + ToTerm("(") + ASIGNACIONPARA + ToTerm(";") + CONDICION + ToTerm(";") + AUMENTOPARA + ToTerm(")") + abre + CUERPOGENERAL + cierra
                         | MIENTRAS + ToTerm("(") + CONDICION + ToTerm(")") + abre + CUERPOGENERAL + cierra
                         | HACER + abre + CUERPOGENERAL + cierra + MIENTRAS + ToTerm("(") + CONDICION + ToTerm(")") + fin
-                        | SI + ToTerm("(") + CONDICION + (")") + abre + cierra
-                        | SI + ToTerm("(") + CONDICION + (")") + abre + cierra + SINO + abre + CUERPOGENERAL + cierra
-                        | PARA + ToTerm("(") + ASIGNACIONPARA + ToTerm(";") + CONDICION + ToTerm(";") + AUMENTOPARA + ToTerm(")") + abre + cierra
-                        | MIENTRAS + ToTerm("(") + CONDICION + ToTerm(")") + abre + cierra
-                        | HACER + abre + cierra + MIENTRAS + ToTerm("(") + CONDICION + ToTerm(")") + fin;
+                        //| SI + ToTerm("(") + CONDICION + (")") + abre + cierra
+                        //| SI + ToTerm("(") + CONDICION + (")") + abre + cierra + SINO + abre + CUERPOGENERAL + cierra
+                        //| PARA + ToTerm("(") + ASIGNACIONPARA + ToTerm(";") + CONDICION + ToTerm(";") + AUMENTOPARA + ToTerm(")") + abre + cierra
+                        //| MIENTRAS + ToTerm("(") + CONDICION + ToTerm(")") + abre + cierra
+                        //| HACER + abre + cierra + MIENTRAS + ToTerm("(") + CONDICION + ToTerm(")") + fin
+                        ;
 
             ASIGNACIONPARA.Rule = vari + entero + id + ToTerm("=") + E
-                                | id + ToTerm("=") + E;
+                                | id + ToTerm("=") + E
+                                ;
 
             AUMENTOPARA.Rule = id + ToTerm("++")
                            | id + ToTerm("--")
-                           | numero + ToTerm("++")
-                           | numero + ToTerm("--")
-                           | E + ToTerm("++")
-                           | E + ToTerm("--");
+                      ;
             #endregion
 
             #region ARITMETICA
@@ -439,13 +465,20 @@ namespace _OLC1_Proyecto2_201503470.Analizadores
                      |id + ToTerm("(")+ PARAMETROS + ToTerm(")")
                      |id + ToTerm("[") + E + ("]")
                      ;
+
+            F.Rule = F + ToTerm("+") + F
+                     | F + ToTerm("-") + F
+                     | F + ToTerm("*") + F
+                     | F + ToTerm("/") + F
+                     | numero;
             #endregion
 
             #region CONDICION
-            CONDICION.Rule = CONDICION + ToTerm("+") + E
-                    | CONDICION + ToTerm("-") + CONDICION
-                    | CONDICION + ToTerm("*") + CONDICION
-                    | CONDICION + ToTerm("/") + CONDICION
+            CONDICION.Rule = E//CONDICION + ToTerm("+") + E
+                    //| CONDICION + ToTerm("-") + CONDICION
+                    //| CONDICION + ToTerm("*") + CONDICION
+                    //| CONDICION + ToTerm("/") + CONDICION
+
                     | CONDICION + ToTerm("<") + CONDICION
                     | CONDICION + ToTerm(">") + CONDICION
                     | CONDICION + ToTerm("==") + CONDICION
@@ -457,12 +490,14 @@ namespace _OLC1_Proyecto2_201503470.Analizadores
                     | CONDICION + ToTerm("!&&") + CONDICION
                     | CONDICION + ToTerm("!||") + CONDICION
                     | CONDICION + ToTerm("&|") + CONDICION
+
                     | ToTerm("!") + CONDICION
                     | ToTerm("(") + CONDICION + (")")
                     | ToTerm("[") + CONDICION + ("]")
-                    | numero
+
+                    //| numero
                     | CONDICION + ToTerm(".") + CONDICION
-                    | id;
+                    /*| id*/;
 
             #endregion
 
@@ -471,18 +506,20 @@ namespace _OLC1_Proyecto2_201503470.Analizadores
             PRINCIPAL.Rule = principal + ToTerm("(") + ToTerm(")") + abre + CUERPOGENERAL + cierra
                            | principal + ToTerm("(") + ToTerm(")") + abre + cierra;
 
-            PROCEDIMIENTOS.Rule = VISIBILIDAD + conservar + TIPOPROC
-                                | conservar + TIPOPROC
-                                |TIPOPROC
-                                | VISIBILIDAD + TIPOPROC;
+            PROCEDIMIENTOS.Rule = VISIBILIDAD + id + ToTerm("(") + ToTerm(")")+ abre+CUERPOGENERAL+cierra
+                                 | id + ToTerm("(") + entero+id+ToTerm(",")+entero+id +ToTerm(")")+abre+CUERPOGENERAL+cierra
+                                 |TIPOVAR + id + ToTerm("(")+ToTerm(")")+ abre + CUERPOGENERAL + retorn + E + fin + cierra;
+
+            //PROCEDIMIENTOS.Rule = VISIBILIDAD + conservar + TIPOPROC
+            //                    | conservar + TIPOPROC
+            //                    |TIPOPROC
+            //                    | VISIBILIDAD + TIPOPROC;
 
             TIPOPROC.Rule = TIPOVAR +  id + ToTerm("(") + PARAMETROS + ToTerm(")") + abre + CUERPOGENERAL + retorn + E +fin+ cierra
                           | id + ToTerm("(") + PARAMETROS + ToTerm(")") + abre + CUERPOGENERAL +  cierra
                           | booleano +id + ToTerm("(") + PARAMETROS + ToTerm(")") + abre + CUERPOGENERAL + retorn+fin+ BOOL + cierra
                           | cadena +id + ToTerm("(") + PARAMETROS + ToTerm(")") + abre + CUERPOGENERAL + retorn +ToTerm("'")+ LISTCADENA +ToTerm("'") + fin + cierra
                           | caracter + id + ToTerm("(") + PARAMETROS + ToTerm(")") + abre + CUERPOGENERAL + retorn + ToTerm("\"")+LISTCADENA+ToTerm("\"") + fin + cierra
-
-
                           | TIPOVAR + id + ToTerm("(") +ToTerm(")") + abre + CUERPOGENERAL + retorn + E + fin + cierra
                           | id + ToTerm("(") + ToTerm(")") + abre + CUERPOGENERAL + cierra
                           | booleano + id + ToTerm("(") +  ToTerm(")") + abre + CUERPOGENERAL + retorn + BOOL + fin + cierra
@@ -491,11 +528,13 @@ namespace _OLC1_Proyecto2_201503470.Analizadores
 
             PARAMETROS.Rule = PARAMETROS + ToTerm(",") + TIPOVAR + E
                             | TIPOVAR + E
-                            |PARAMETROS + ToTerm(",")+E
-                            |E
-                            |PARAMETROS + ToTerm(",")+ id + E
+                            | PARAMETROS + ToTerm(",") + E
+                            | E
+                            | PARAMETROS + ToTerm(",") + id + E
                             | id + E
                             ;
+            //PARAMETROS.Rule = PARAMETROS + ToTerm(",") + TIPOVAR + id
+            //                | TIPOVAR + id;
 
             TIPOVAR.Rule = entero
                          | doble
@@ -508,9 +547,10 @@ namespace _OLC1_Proyecto2_201503470.Analizadores
                          | cadena + ToTerm("[") + ToTerm("]")
                          | caracter + ToTerm("[") + ToTerm("]");
 
-            PROCNATIVOS.Rule = punto + ToTerm("(") + E+ ToTerm(",")+E+ToTerm(",")+ToTerm("\"")+LISTCADENA+ToTerm("\"")+ToTerm(",")+E+ToTerm(")")+ToTerm("$")
-                             | or + ToTerm("(") + E + ToTerm(",") + E + ToTerm(",") + ToTerm("\"") + LISTCADENA + ToTerm("\"") + ToTerm(",") + E+ ToTerm(",") + E+ ToTerm(",") + ToTerm("'") +ToTerm("o")+ ToTerm("'") + ToTerm(")") + ToTerm("$")
-                             | or + ToTerm("(") + E + ToTerm(",") + E + ToTerm(",") + ToTerm("\"") + LISTCADENA + ToTerm("\"") + ToTerm(",") + E + ToTerm(",") + E + ToTerm(",") + ToTerm("'") + ToTerm("r") + ToTerm("'") + ToTerm(")") + ToTerm("$");
+            PROCNATIVOS.Rule = punto + ToTerm("(") + E+ ToTerm(",")+E+ToTerm(",")+ToTerm("\"")+ToTerm("#")+hexa+ToTerm("\"")+ToTerm(",")+E+ToTerm(")")+ToTerm("$")
+                             | or + ToTerm("(") + E + ToTerm(",") + E + ToTerm(",") + ToTerm("\"") + ToTerm("#") + hexa +  ToTerm("\"") + ToTerm(",") + E+ ToTerm(",") + E+ ToTerm(",") + ToTerm("'") +ToTerm("o")+ ToTerm("'") + ToTerm(")") + ToTerm("$")
+                             | or + ToTerm("(") + E + ToTerm(",") + E + ToTerm(",") + ToTerm("\"") + ToTerm("#") + hexa + ToTerm("\"") + ToTerm(",") + E + ToTerm(",") + E + ToTerm(",") + ToTerm("'") + ToTerm("r") + ToTerm("'") + ToTerm(")") + ToTerm("$")
+                             ;
 
             #endregion
 
